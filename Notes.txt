@@ -1,0 +1,4 @@
+1) Working with JPA entities(e.g. Product entity) directly for data transitions is not recommended,
+   It is better to create a copy from it (e.g.AddProductRequest class), which we refer to it as "Data Transfer Object(DTO)" 
+2) Using @Data for JPA entities is not recommended.It can cause severe performance and memory consumption issues.
+	-You can use @Data on DTO and @Getter/@Setter on JPA entities.
