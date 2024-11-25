@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.waleed.dreamshops.exceptions.ResourceNotFoundException;
 import com.waleed.dreamshops.model.Cart;
 import com.waleed.dreamshops.model.User;
-import com.waleed.dreamshops.repository.CartItemRepository;
 import com.waleed.dreamshops.repository.CartRepository;
 
 import jakarta.transaction.Transactional;
@@ -19,24 +18,20 @@ import lombok.RequiredArgsConstructor;
 public class CartService implements ICartService{
 
 	private final CartRepository cartRepository;
-	private final CartItemRepository cartItemRepository;
 	@Override
 	public Cart getCart(Long id) {
-		Cart cart = cartRepository.findById(id)
+		return  cartRepository.findById(id)
 			.orElseThrow(() -> 
 				new ResourceNotFoundException("Cart not found. id:"+id));
-		BigDecimal totalAmount = cart.getTotalAmount();
-		//cart.setTotalAmount(totalAmount);
-		return cartRepository.save(cart);
 	}
 
 	@Transactional
 	@Override
 	public void clearCart(Long id) {
 		Cart cart = getCart(id);
-		cartItemRepository.deleteAllByCartId(id);
 		cart.getItems().clear();
-		cartRepository.deleteById(id);
+		cart.updateTotalAmount();
+		cartRepository.save(cart);
 	}
 		
 	
