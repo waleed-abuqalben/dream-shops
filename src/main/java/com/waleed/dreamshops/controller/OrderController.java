@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waleed.dreamshops.dto.OrderDto;
 import com.waleed.dreamshops.exceptions.ResourceNotFoundException;
 import com.waleed.dreamshops.model.Order;
+import com.waleed.dreamshops.model.User;
 import com.waleed.dreamshops.response.ApiResponse;
 import com.waleed.dreamshops.service.order.IOrderService;
+import com.waleed.dreamshops.service.user.IUserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,11 +29,13 @@ import lombok.RequiredArgsConstructor;
 public class OrderController {
 
 	private final IOrderService orderService;
+	private final IUserService userService;
 	
 	@PostMapping("/order")
-	public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId) {
+	public ResponseEntity<ApiResponse> createOrder() {
 		try {
-			Order order = orderService.placeOrder(userId);
+			User user = userService.getAuthenticatedUser(); 
+			Order order = orderService.placeOrder(user.getId());
 			OrderDto orderDto = orderService.convertToDto(order);
 			return ResponseEntity.ok(new ApiResponse("Item Order Success!", orderDto));
 		} catch (ResourceNotFoundException e) {

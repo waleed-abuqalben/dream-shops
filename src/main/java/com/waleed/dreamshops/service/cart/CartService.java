@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.waleed.dreamshops.enums.CartStatus;
 import com.waleed.dreamshops.exceptions.ResourceNotFoundException;
 import com.waleed.dreamshops.model.Cart;
 import com.waleed.dreamshops.model.User;
@@ -29,11 +30,12 @@ public class CartService implements ICartService{
 	@Override
 	public void clearCart(Long id) {
 		Cart cart = getCart(id);
+		//Will delete the items in DB
 		cart.getItems().clear();
 		cart.updateTotalAmount();
+		cart.setCartStatus(CartStatus.COMPLETED);
 		cartRepository.save(cart);
 	}
-		
 	
 	@Override
 	public BigDecimal getTotalPrice(Long id) {
@@ -51,7 +53,6 @@ public class CartService implements ICartService{
 				});
 	}
 
-	
 	@Override
 	public Cart getCartByUserId(Long userId) {
 		return cartRepository.findByUserId(userId);

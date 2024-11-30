@@ -4,8 +4,12 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.waleed.dreamshops.enums.CartStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,12 +32,15 @@ public class Cart {
 	private Long id;
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	
+	@Enumerated(EnumType.STRING)
+	private CartStatus cartStatus = CartStatus.ACTIVE;
+
 	//If Cart is deleted, all cartItems will deleted.
 	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<CartItem> items = new HashSet<>();
 	
 	@OneToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id")//TODO:nullable = false
 	private User user;
 	
 	public void addItem(CartItem item) {

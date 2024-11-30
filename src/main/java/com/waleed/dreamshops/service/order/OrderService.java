@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.waleed.dreamshops.dto.OrderDto;
+import com.waleed.dreamshops.enums.CartStatus;
 import com.waleed.dreamshops.enums.OrderStatus;
 import com.waleed.dreamshops.exceptions.ResourceNotFoundException;
 import com.waleed.dreamshops.model.Cart;
@@ -34,6 +35,10 @@ public class OrderService implements IOrderService{
 	@Override
 	public Order placeOrder(Long userId) {
 		Cart cart = cartService.getCartByUserId(userId); 
+		
+		if (cart.getCartStatus() != CartStatus.ACTIVE || cart.getItems().isEmpty()) {
+	        throw new IllegalStateException("Cannot place an order with an empty or completed cart.");
+	    }
 		
 		Order order = createOrder(cart);
 		List<OrderItem> orderItemList = createOrderItems(order, cart);

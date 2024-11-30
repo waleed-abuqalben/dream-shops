@@ -21,7 +21,9 @@ import com.waleed.dreamshops.security.user.ShopUserDetails;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/auth")
@@ -43,6 +45,7 @@ public class AuthController {
 				String jwtToken = jwtUtils.generateTokenForUser(authentication);
 				ShopUserDetails userDetails = (ShopUserDetails) authentication.getPrincipal();
 				JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwtToken);
+				log.info("login success");
 				return ResponseEntity.ok(new ApiResponse("Login success!", jwtResponse));
 			
 		} catch (AuthenticationException e) {
